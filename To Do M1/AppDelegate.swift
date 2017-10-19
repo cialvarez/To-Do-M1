@@ -8,15 +8,31 @@
 
 import UIKit
 import CoreData
+import Firebase
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
     var window: UIWindow?
-
+    var toDoListStateController = ToDoListStateController()
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
+        
+        guard let rootVC = window?.rootViewController as? UINavigationController,
+        let topVC = rootVC.topViewController as? ToDoListTableViewController
+        else {
+            fatalError("Couldn't cast root view controller as a navigation controller.")
+        }
+        
+        //create new state controller from context
+        toDoListStateController = ToDoListStateController(context: persistentContainer.viewContext)
+        
+        //pass this new state controller to first vc
+        topVC.toDoListStateController = self.toDoListStateController
+        
+        FirebaseApp.configure()
+        
         return true
     }
 
